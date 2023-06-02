@@ -64,6 +64,7 @@
     <Compile Include="ADO\Client.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="ADO\DBConnections.cs" />
     <Compile Include="ADO\Departament.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>

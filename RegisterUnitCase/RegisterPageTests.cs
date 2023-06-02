@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using KeeperPRO.ADO;
+using System.Data.Common;
+using RegisterUnitCase.ADO;
 
 namespace KeeperPRO.Pages.Auth.Tests
 {
@@ -15,13 +16,35 @@ namespace KeeperPRO.Pages.Auth.Tests
         [TestMethod()]
         public void RegisterPageTest()
         {
-            KeeperPRODBEntities DB = new KeeperPRODBEntities();
+            User newUser = new User
+            {
+                Email = "testEmail@gmail.com",
+                EncPassword = SHA512("password"),
+                RoleCode = 1,
+                FirstName = "Шубина",
+                LastName = "Тамара",
+                SurName = "Яковна",
+                Login = "testEmail"
+            };
 
-            var emailInput = "keeper@mail.ru";
-            
+            DBConnections.DB.User.Add(newUser);
+            DBConnections.DB.SaveChanges();
 
+            Assert.IsTrue(newUser.ID != 0);
+        }
 
-            Assert.IsTrue();
+        public static string SHA512(string input)
+        {
+            var bytes = System.Text.Encoding.UTF8.GetBytes(input);
+            using (var hash = System.Security.Cryptography.SHA512.Create())
+            {
+                var hashedInputBytes = hash.ComputeHash(bytes);
+
+                var hashedInputStringBuilder = new System.Text.StringBuilder(128);
+                foreach (var b in hashedInputBytes)
+                    hashedInputStringBuilder.Append(b.ToString("X2"));
+                return hashedInputStringBuilder.ToString();
+            }
         }
 
 
