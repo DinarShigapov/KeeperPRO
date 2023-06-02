@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Common;
 using RegisterUnitCase.ADO;
+using RegisterUnitCase.Service;
 
 namespace KeeperPRO.Pages.Auth.Tests
 {
@@ -18,13 +19,13 @@ namespace KeeperPRO.Pages.Auth.Tests
         {
             User newUser = new User
             {
-                Email = "testEmail@gmail.com",
-                EncPassword = SHA512("password"),
+                Email = "test3Email@gmail.com",
+                EncPassword = Hashing.SHA512("password"),
                 RoleCode = 1,
                 FirstName = "Шубина",
                 LastName = "Тамара",
                 SurName = "Яковна",
-                Login = "testEmail"
+                Login = "test3Email"
             };
 
             DBConnections.DB.User.Add(newUser);
@@ -32,8 +33,6 @@ namespace KeeperPRO.Pages.Auth.Tests
 
             Assert.IsTrue(newUser.ID != 0);
         }
-
-
 
         [TestMethod()]
         public void RegisterValidateDBTest()
@@ -51,7 +50,7 @@ namespace KeeperPRO.Pages.Auth.Tests
             User newUser = new User
             {
                 Email = "test2Email@gmail.com",
-                EncPassword = SHA512(password),
+                EncPassword = Hashing.SHA512(password),
                 RoleCode = 1,
                 FirstName = "Зиновьева",
                 LastName = "Таисия",
@@ -101,19 +100,6 @@ namespace KeeperPRO.Pages.Auth.Tests
         }
 
 
-        public static string SHA512(string input)
-        {
-            var bytes = System.Text.Encoding.UTF8.GetBytes(input);
-            using (var hash = System.Security.Cryptography.SHA512.Create())
-            {
-                var hashedInputBytes = hash.ComputeHash(bytes);
-
-                var hashedInputStringBuilder = new System.Text.StringBuilder(128);
-                foreach (var b in hashedInputBytes)
-                    hashedInputStringBuilder.Append(b.ToString("X2"));
-                return hashedInputStringBuilder.ToString();
-            }
-        }
 
     }
 }
