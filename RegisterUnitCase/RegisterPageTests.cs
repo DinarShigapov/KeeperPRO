@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Data.Common;
 using RegisterUnitCase.ADO;
 using RegisterUnitCase.Service;
+using System.Text.RegularExpressions;
 
 namespace KeeperPRO.Pages.Auth.Tests
 {
@@ -15,8 +16,10 @@ namespace KeeperPRO.Pages.Auth.Tests
     public class RegisterPageTests
     {
         [TestMethod()]
-        public void RegisterSaveDBTest()
+        public void RegisterUser_SaveDBTest()
         {
+            // Arrange
+
             User newUser = new User
             {
                 Email = "test3Email@gmail.com",
@@ -28,15 +31,47 @@ namespace KeeperPRO.Pages.Auth.Tests
                 Login = "test3Email"
             };
 
+            // Act
+
             DBConnections.DB.User.Add(newUser);
             DBConnections.DB.SaveChanges();
 
+            // Assert
+
             Assert.IsTrue(newUser.ID != 0);
+        }
+        
+        [TestMethod()]
+        public void ValidateEmailTest()
+        {
+            // Arrange
+
+            string email = "bulatT@mail.com";
+            string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+
+            // Act
+
+            bool result = ValidateEmail(email, pattern);
+
+            // Assert
+
+            Assert.IsTrue(result);
+        }
+
+
+        public bool ValidateEmail(string email, string pattern)
+        {
+            if (!Regex.IsMatch(email, pattern))
+            {
+                return false;
+            }
+            return true;
         }
 
         [TestMethod()]
-        public void RegisterValidateDBTest()
+        public void RegisterValidatePasswordDBTest()
         {
+            // Arrange
 
             string password = "Zz8POQlP}M4~";
 
@@ -45,7 +80,7 @@ namespace KeeperPRO.Pages.Auth.Tests
                 Assert.IsTrue(IsValidatePassword(password));
                 return;
             }
-            
+
 
             User newUser = new User
             {
@@ -58,8 +93,12 @@ namespace KeeperPRO.Pages.Auth.Tests
                 Login = "test2Email"
             };
 
+            // Act
+
             DBConnections.DB.User.Add(newUser);
             DBConnections.DB.SaveChanges();
+
+            // Assert
 
             Assert.IsTrue(newUser.ID != 0);
         }
@@ -93,7 +132,6 @@ namespace KeeperPRO.Pages.Auth.Tests
             }
             if (message != "")
             {
-                Assert.Fail(message);
                 return false;
             }
             return true;
